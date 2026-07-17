@@ -37,6 +37,7 @@ export default function BeachDetail() {
           <Text style={styles.rating}>★ {beach.rating.toFixed(1)} · {beach.reviews} avaliações</Text>
           <Text style={styles.description}>{beach.description}</Text>
 
+          <BeachWeather latitude={beach.latitude} longitude={beach.longitude} />
           <Text style={styles.mapLabel}>Visão satélite</Text>
           <View style={styles.mapPreview}><MapPreview beach={beach} /></View>
           <Pressable onPress={navigate} style={styles.navigate}><Ionicons name="navigate" color={colors.onPrimary} size={20} /><Text style={styles.navigateText}>Como chegar</Text></Pressable>
@@ -49,7 +50,6 @@ export default function BeachDetail() {
             <Fact label="Areia" value={beach.sand} />
             <Fact label="Ondas" value={beach.waves} />
           </View>
-          <BeachWeather latitude={beach.latitude} longitude={beach.longitude} />
           <Text style={styles.heading}>História</Text>
           <Text style={styles.description}>{beach.history}</Text>
         </View>
