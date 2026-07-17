@@ -1,0 +1,18 @@
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { BeachCard } from '@/src/components/BeachCard';
+import { beaches, featuredBeaches } from '@/src/data/beaches';
+import { colors, radius } from '@/src/theme';
+
+const categories = ['Todas', 'Familiar', 'Surf', 'Mergulho', 'Urbana', 'Selvagem'] as const;
+const headerHeight = Dimensions.get('window').width;
+
+export default function HomeScreen() {
+  return <View style={styles.safe}><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}><View style={styles.header}><Pressable onPress={() => router.push('/explorar')}><Image source={require('../../assets/guarapari-360-hero-dark.png')} resizeMode="contain" style={styles.headerImage}/></Pressable><SearchBar/></View><View style={styles.content}><Section title="Destaques para você" action="Ver tudo" onPress={() => router.push('/explorar')}/><FlatList horizontal data={featuredBeaches} keyExtractor={(item) => item.id} renderItem={({ item }) => <BeachCard beach={item}/>} showsHorizontalScrollIndicator={false}/><Section title="Encontre sua experiência"/><ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>{categories.map((category) => <Pressable key={category} onPress={() => router.push({ pathname: '/explorar', params: { category } })} style={styles.chip}><Text style={styles.chipText}>{category}</Text></Pressable>)}</ScrollView><Section title="Todas as praias" action={`${beaches.length} lugares`} onPress={() => router.push('/explorar')}/>{beaches.slice(0, 4).map((beach) => <BeachCard key={beach.id} beach={beach} compact/>)}</View></ScrollView><Pressable style={styles.fab} onPress={() => router.push('/mapa')}><Ionicons name="map" size={23} color="white"/></Pressable></View>;
+}
+
+function SearchBar() { return <Pressable onPress={() => router.push('/pesquisa')} style={styles.search}><Ionicons name="search" size={20} color={colors.ocean}/><Text style={styles.searchPlaceholder}>Praias, sabores, hospedagens...</Text></Pressable>; }
+function Section({ title, action, onPress }: { title: string; action?: string; onPress?: () => void }) { return <View style={styles.section}><Text style={styles.sectionTitle}>{title}</Text>{action && <Pressable onPress={onPress}><Text style={styles.action}>{action}</Text></Pressable>}</View>; }
+
+const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: colors.surface }, scroll: { paddingBottom: 100 }, header: { position: 'relative' }, headerImage: { width: '100%', height: headerHeight }, search: { position: 'absolute', left: 16, right: 16, bottom: 18, height: 52, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E7ECF0', paddingHorizontal: 16, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', gap: 10, elevation: 3 }, searchPlaceholder: { color: '#52616B', fontSize: 13 }, content: { paddingHorizontal: 20 }, section: { marginTop: 28, marginBottom: 13, flexDirection: 'row', justifyContent: 'space-between' }, sectionTitle: { color: colors.ink, fontSize: 20, fontWeight: '900' }, action: { color: colors.ocean, fontWeight: '700' }, chips: { gap: 9 }, chip: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, paddingHorizontal: 15, paddingVertical: 10, borderRadius: radius.pill }, chipText: { fontWeight: '700', color: colors.ink }, fab: { position: 'absolute', right: 22, bottom: 18, width: 54, height: 54, borderRadius: 27, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.coral, elevation: 5 } });

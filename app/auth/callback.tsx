@@ -1,0 +1,2 @@
+import { useEffect } from 'react'; import { ActivityIndicator, View } from 'react-native'; import * as Linking from 'expo-linking'; import { router } from 'expo-router'; import { auth } from '@/src/lib/auth';
+export default function AuthCallback(){const url=Linking.useURL();useEffect(()=>{if(url)auth.exchangeCallback(url).finally(()=>router.replace('/(tabs)/perfil'));},[url]);return <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><ActivityIndicator/></View>}

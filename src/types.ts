@@ -1,0 +1,3 @@
+export type BeachCategory = 'Familiar' | 'Surf' | 'Mergulho' | 'Urbana' | 'Selvagem';
+export type Beach = { id: string; name: string; neighborhood: string; category: BeachCategory; latitude: number; longitude: number; description: string; history: string; facts: string[]; features: string[]; bestTime: string; bestSeason: string; sand: string; water: string; waves: string; suitableFor: string[]; gallery: readonly string[]; rating: number; reviews: number };
+export type NearbyPlace = { id: string; name: string; type: string; rating?: number; address: string; distance?: string; phone?: string; website?: string };
