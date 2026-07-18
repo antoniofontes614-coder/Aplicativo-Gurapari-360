@@ -27,4 +27,5 @@ export const auth = {
     if (Platform.OS !== 'web' && data.url) await Linking.openURL(data.url);
   },
   exchangeCallback: (code: string) => requireClient().auth.exchangeCodeForSession(code),
+  setSession: (accessToken: string, refreshToken: string) => requireClient().auth.setSession({ access_token: accessToken, refresh_token: refreshToken }),
 };
