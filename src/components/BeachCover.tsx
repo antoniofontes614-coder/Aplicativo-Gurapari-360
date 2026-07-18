@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Dimensions, ScrollView, View } from 'react-native';
+import { Dimensions, ScrollView, Text, View } from 'react-native';
 import { BeachVisual } from './BeachVisual';
 import { supabase } from '@/src/lib/supabase';
 
@@ -19,5 +19,5 @@ export function BeachCover({ beachSlug, name, uri, height }: Props) {
 
   const width = Dimensions.get('window').width;
   if (!uploadedPhotos.length) return <BeachVisual name={name} uri={uri} height={height} />;
-  return <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>{uploadedPhotos.map((photo) => <View key={photo} style={{ width }}><BeachVisual name={name} uri={photo} preferUri height={height} /></View>)}</ScrollView>;
+  return <View><ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false}>{uploadedPhotos.map((photo) => <View key={photo} style={{ width }}><BeachVisual name={name} uri={photo} preferUri height={height} /></View>)}</ScrollView>{uploadedPhotos.length > 1 && <View pointerEvents="none" style={{ position: 'absolute', bottom: 12, alignSelf: 'center', backgroundColor: 'rgba(0,0,0,.55)', borderRadius: 14, paddingHorizontal: 11, paddingVertical: 5 }}><Text style={{ color: 'white', fontSize: 12, fontWeight: '800' }}>? Deslize para ver mais fotos ?</Text></View>}</View>;
 }
