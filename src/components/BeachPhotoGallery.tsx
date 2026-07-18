@@ -18,14 +18,15 @@ export function BeachPhotoGallery({ beachSlug }: { beachSlug: string }) {
     },
   });
 
-  if (!data.length || !supabase) return null;
+  const client = supabase;
+  if (!data.length || !client) return null;
 
   return (
     <View style={styles.section}>
       <Text style={styles.title}>Fotos da praia</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
         {data.map((photo) => {
-          const { data: url } = supabase.storage.from('beach-gallery').getPublicUrl(photo.storage_path);
+          const { data: url } = client.storage.from('beach-gallery').getPublicUrl(photo.storage_path);
           return <View key={photo.id} style={styles.card}><Image source={url.publicUrl} style={styles.image} contentFit="cover" /><Text numberOfLines={2} style={styles.caption}>{photo.caption || 'Foto enviada pela administração'}</Text></View>;
         })}
       </ScrollView>

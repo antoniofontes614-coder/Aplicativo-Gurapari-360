@@ -1,16 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { router, type Href } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { auth } from '@/src/lib/auth';
 import { useAuth } from '@/src/store/auth';
 import { colors, radius } from '@/src/theme';
 
-const ADMIN_EMAIL = 'vitoria1000valente@gmail.com';
-
 export default function ProfileScreen() {
   const session = useAuth((state) => state.session);
-  const isAdmin = session?.user.email === ADMIN_EMAIL;
+  const isAdmin = useAuth((state) => state.role) === 'admin';
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -19,9 +17,10 @@ export default function ProfileScreen() {
         <Text style={styles.title}>{session?.user.user_metadata.first_name ?? 'Seu perfil'}</Text>
         <Text style={styles.text}>{session?.user.email ?? 'Entre para salvar roteiros, receber alertas e personalizar sua viagem.'}</Text>
         {session ? <>
-          <Menu label="Checklist de viagem" onPress={() => router.push('/viagem/checklist')} />
-          <Menu label="Diário de viagem" onPress={() => router.push('/viagem/diario')} />
-          <Menu label="Roteiros" onPress={() => router.push('/viagem/roteiros')} />
+          <Menu label="Checklist de viagem" onPress={() => router.push('/viagem/checklist' as Href)} />
+          <Menu label="Diário de viagem" onPress={() => router.push('/viagem/diario' as Href)} />
+          <Menu label="Roteiros" onPress={() => router.push('/viagem/roteiros' as Href)} />
+          {isAdmin && <Menu label="Administração" onPress={() => router.push('/admin' as Href)} />}
           {isAdmin && <Menu label="Adicionar fotos das praias" onPress={() => router.push('/admin/fotos')} />}
           <Pressable style={styles.outline} onPress={() => auth.signOut()}><Text style={styles.outlineText}>Sair</Text></Pressable>
         </> : <Pressable style={styles.button} onPress={() => router.push('/auth/login')}><Text style={styles.buttonText}>Entrar ou criar conta</Text></Pressable>}

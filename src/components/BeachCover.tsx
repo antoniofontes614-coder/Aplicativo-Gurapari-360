@@ -10,10 +10,11 @@ export function BeachCover({ beachSlug, name, uri, height }: Props) {
     queryKey: ['beach-cover-gallery', beachSlug],
     enabled: Boolean(supabase),
     queryFn: async () => {
-      if (!supabase) return undefined;
-      const { data, error } = await supabase.from('beach_photos').select('storage_path').eq('beach_slug', beachSlug).order('created_at', { ascending: false });
+      const client = supabase;
+      if (!client) return undefined;
+      const { data, error } = await client.from('beach_photos').select('storage_path').eq('beach_slug', beachSlug).order('created_at', { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((photo) => supabase.storage.from('beach-gallery').getPublicUrl(photo.storage_path).data.publicUrl);
+      return (data ?? []).map((photo) => client.storage.from('beach-gallery').getPublicUrl(photo.storage_path).data.publicUrl);
     },
   });
 
