@@ -18,6 +18,13 @@ export const auth = {
   signOut: () => requireClient().auth.signOut(),
   resetPassword: (email: string) => requireClient().auth.resetPasswordForEmail(email, { redirectTo: redirectUrl('/auth/redefinir-senha') }),
   updatePassword: (password: string) => requireClient().auth.updateUser({ password }),
-  async signInWithProvider(provider: Provider) { const { data, error } = await requireClient().auth.signInWithOAuth({ provider, options: { redirectTo: redirectUrl('/auth/callback'), skipBrowserRedirect: true } }); if (error) throw error; if (data.url) await Linking.openURL(data.url); },
-  exchangeCallback: (url: string) => requireClient().auth.exchangeCodeForSession(url),
+  async signInWithProvider(provider: Provider) {
+    const { data, error } = await requireClient().auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: redirectUrl('/auth/callback'), skipBrowserRedirect: Platform.OS !== 'web' },
+    });
+    if (error) throw error;
+    if (Platform.OS !== 'web' && data.url) await Linking.openURL(data.url);
+  },
+  exchangeCallback: (code: string) => requireClient().auth.exchangeCodeForSession(code),
 };
