@@ -43,7 +43,6 @@ export default function BeachDetail() {
           <View style={styles.mapPreview}><MapPreview beach={beach} /></View>
           <Pressable onPress={navigate} style={styles.navigate}><Ionicons name="navigate" color={colors.onPrimary} size={20} /><Text style={styles.navigateText}>Como chegar</Text></Pressable>
 
-          <Info title="O que esperar" items={beach.features} />
           <Info title="Boa para" items={beach.suitableFor} />
           <View style={styles.grid}>
             <Fact label="Melhor horário" value={beach.bestTime} />
