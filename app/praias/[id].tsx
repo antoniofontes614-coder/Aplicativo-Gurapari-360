@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BeachVisual } from '@/src/components/BeachVisual';
 import { BeachWeather } from '@/src/components/BeachWeather';
+import { BeachPhotoGallery } from '@/src/components/BeachPhotoGallery';
 import { MapPreview } from '@/src/components/MapPreview';
 import { NearbyServices } from '@/src/components/NearbyServices';
 import { beaches } from '@/src/data/beaches';
@@ -38,6 +39,7 @@ export default function BeachDetail() {
           <Text style={styles.title}>{beach.name}</Text>
           <Text style={styles.rating}>★ {beach.rating.toFixed(1)} · {beach.reviews} avaliações</Text>
           <Text style={styles.description}>{beach.description}</Text>
+          <BeachPhotoGallery beachSlug={beach.id} />
 
           <BeachWeather latitude={beach.latitude} longitude={beach.longitude} />
           <Text style={styles.mapLabel}>Visão satélite</Text>

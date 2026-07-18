@@ -1,2 +1,52 @@
-import { Ionicons } from '@expo/vector-icons'; import { router } from 'expo-router'; import { Pressable, StyleSheet, Text, View } from 'react-native'; import { SafeAreaView } from 'react-native-safe-area-context'; import { auth } from '@/src/lib/auth'; import { useAuth } from '@/src/store/auth'; import { colors, radius } from '@/src/theme';
-export default function ProfileScreen(){const session=useAuth((s)=>s.session);return <SafeAreaView style={styles.safe}><View style={styles.content}><View style={styles.avatar}><Ionicons name="person" size={40} color={colors.ocean}/></View><Text style={styles.title}>{session?.user.user_metadata.first_name??'Seu perfil'}</Text><Text style={styles.text}>{session?.user.email??'Entre para salvar roteiros, receber alertas e personalizar sua viagem.'}</Text>{session?<><Menu label="Checklist de viagem" onPress={()=>router.push('/viagem/checklist')}/><Menu label="Diário de viagem" onPress={()=>router.push('/viagem/diario')}/><Menu label="Roteiros" onPress={()=>router.push('/viagem/roteiros')}/><Pressable style={styles.outline} onPress={()=>auth.signOut()}><Text style={styles.outlineText}>Sair</Text></Pressable></>:<Pressable style={styles.button} onPress={()=>router.push('/auth/login')}><Text style={styles.buttonText}>Entrar ou criar conta</Text></Pressable>}<View style={styles.card}><Text style={styles.cardTitle}>Experiência premium</Text><Text style={styles.text}>Dados pessoais e favoritos sincronizam com segurança em todos os dispositivos.</Text></View></View></SafeAreaView>};function Menu({label,onPress}:{label:string;onPress:()=>void}){return <Pressable style={styles.menu} onPress={onPress}><Text style={styles.menuText}>{label}</Text><Ionicons name="chevron-forward" color={colors.muted}/></Pressable>}; const styles=StyleSheet.create({safe:{flex:1,backgroundColor:colors.surface},content:{padding:24},avatar:{height:88,width:88,borderRadius:44,backgroundColor:colors.aqua,alignItems:'center',justifyContent:'center'},title:{fontSize:28,fontWeight:'900',color:colors.ink,marginTop:20},text:{color:colors.muted,lineHeight:22,marginTop:8},button:{backgroundColor:colors.ocean,borderRadius:radius.pill,padding:15,alignItems:'center',marginTop:22},buttonText:{color:'white',fontWeight:'900'},outline:{borderWidth:1,borderColor:colors.ocean,borderRadius:radius.pill,padding:14,alignItems:'center',marginTop:16},outlineText:{color:colors.ocean,fontWeight:'900'},menu:{backgroundColor:'white',borderRadius:radius.sm,padding:16,marginTop:14,flexDirection:'row',justifyContent:'space-between'},menuText:{fontWeight:'800',color:colors.ink},card:{backgroundColor:'white',padding:20,borderRadius:radius.md,marginTop:28},cardTitle:{fontSize:18,fontWeight:'800',color:colors.ink}});
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { auth } from '@/src/lib/auth';
+import { useAuth } from '@/src/store/auth';
+import { colors, radius } from '@/src/theme';
+
+const ADMIN_EMAIL = 'vitoria1000valente@gmail.com';
+
+export default function ProfileScreen() {
+  const session = useAuth((state) => state.session);
+  const isAdmin = session?.user.email === ADMIN_EMAIL;
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.content}>
+        <View style={styles.avatar}><Ionicons name="person" size={40} color={colors.ocean} /></View>
+        <Text style={styles.title}>{session?.user.user_metadata.first_name ?? 'Seu perfil'}</Text>
+        <Text style={styles.text}>{session?.user.email ?? 'Entre para salvar roteiros, receber alertas e personalizar sua viagem.'}</Text>
+        {session ? <>
+          <Menu label="Checklist de viagem" onPress={() => router.push('/viagem/checklist')} />
+          <Menu label="Diário de viagem" onPress={() => router.push('/viagem/diario')} />
+          <Menu label="Roteiros" onPress={() => router.push('/viagem/roteiros')} />
+          {isAdmin && <Menu label="Adicionar fotos das praias" onPress={() => router.push('/admin/fotos')} />}
+          <Pressable style={styles.outline} onPress={() => auth.signOut()}><Text style={styles.outlineText}>Sair</Text></Pressable>
+        </> : <Pressable style={styles.button} onPress={() => router.push('/auth/login')}><Text style={styles.buttonText}>Entrar ou criar conta</Text></Pressable>}
+        <View style={styles.card}><Text style={styles.cardTitle}>Experiência premium</Text><Text style={styles.text}>Dados pessoais e favoritos sincronizam com segurança em todos os dispositivos.</Text></View>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+function Menu({ label, onPress }: { label: string; onPress: () => void }) {
+  return <Pressable style={styles.menu} onPress={onPress}><Text style={styles.menuText}>{label}</Text><Ionicons name="chevron-forward" color={colors.muted} /></Pressable>;
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.surface },
+  content: { padding: 24 },
+  avatar: { height: 88, width: 88, borderRadius: 44, backgroundColor: colors.aqua, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: 28, fontWeight: '900', color: colors.ink, marginTop: 20 },
+  text: { color: colors.muted, lineHeight: 22, marginTop: 8 },
+  button: { backgroundColor: colors.ocean, borderRadius: radius.pill, padding: 15, alignItems: 'center', marginTop: 22 },
+  buttonText: { color: colors.onPrimary, fontWeight: '900' },
+  outline: { borderWidth: 1, borderColor: colors.ocean, borderRadius: radius.pill, padding: 14, alignItems: 'center', marginTop: 16 },
+  outlineText: { color: colors.ocean, fontWeight: '900' },
+  menu: { backgroundColor: colors.card, borderColor: colors.line, borderWidth: 1, borderRadius: radius.sm, padding: 16, marginTop: 14, flexDirection: 'row', justifyContent: 'space-between' },
+  menuText: { fontWeight: '800', color: colors.ink },
+  card: { backgroundColor: colors.card, borderColor: colors.line, borderWidth: 1, padding: 20, borderRadius: radius.md, marginTop: 28 },
+  cardTitle: { fontSize: 18, fontWeight: '800', color: colors.ink },
+});
