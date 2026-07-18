@@ -16,6 +16,7 @@ export const nearbyServices: readonly Service[] = [
   { label: 'Farmácias', query: 'farmácia', icon: 'medkit-outline' },
   { label: 'Postos de Combustível', query: 'posto de combustível', icon: 'flame-outline' },
   { label: 'Supermercados', query: 'supermercado', icon: 'cart-outline' },
+  { label: 'Pontos de ônibus', query: 'ponto de ônibus', icon: 'bus-outline' },
   { label: 'Hospitais e Pronto Atendimento', query: 'hospital pronto atendimento', icon: 'medical-outline' },
   { label: 'Bancos e Caixas Eletrônicos', query: 'banco caixa eletrônico', icon: 'card-outline' },
   { label: 'Banheiros Públicos', query: 'banheiro público', icon: 'woman-outline' },
