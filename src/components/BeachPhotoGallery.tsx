@@ -12,7 +12,7 @@ export function BeachPhotoGallery({ beachSlug }: { beachSlug: string }) {
     enabled: Boolean(supabase),
     queryFn: async () => {
       if (!supabase) return [] as Photo[];
-      const { data, error } = await supabase.from('beach_photos').select('id, storage_path, caption').eq('beach_slug', beachSlug).order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('beach_photos').select('id, storage_path, caption').eq('beach_slug', beachSlug).order('display_order').order('created_at');
       if (error) throw error;
       return data as Photo[];
     },

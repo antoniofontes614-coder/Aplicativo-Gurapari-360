@@ -28,7 +28,7 @@ export default function PhotoAdminScreen() {
     enabled: Boolean(supabase) && isAdmin,
     queryFn: async () => {
       if (!supabase) return [] as Photo[];
-      const { data, error } = await supabase.from('beach_photos').select('id, storage_path, caption').eq('beach_slug', selectedBeach.id).order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('beach_photos').select('id, storage_path, caption, display_order').eq('beach_slug', selectedBeach.id).order('display_order').order('created_at');
       if (error) throw error;
       return data as Photo[];
     },
@@ -57,7 +57,7 @@ export default function PhotoAdminScreen() {
       setSending(false);
       return;
     }
-    const { error: recordError } = await supabase.from('beach_photos').insert({ beach_slug: selectedBeach.id, storage_path: path, caption: caption.trim() || null });
+    const { error: recordError } = await supabase.from('beach_photos').insert({ beach_slug: selectedBeach.id, storage_path: path, caption: caption.trim() || null, display_order: photos.length + 1 });
     if (recordError) {
       await supabase.storage.from('beach-gallery').remove([path]);
       setMessage(recordError.message);
@@ -100,6 +100,23 @@ export default function PhotoAdminScreen() {
     setSending(false);
   };
 
+  const movePhoto = async (index: number, direction: -1 | 1) => {
+    if (!supabase || !isAdmin) return;
+    const client = supabase;
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= photos.length) return;
+    const reordered = [...photos];
+    [reordered[index], reordered[nextIndex]] = [reordered[nextIndex], reordered[index]];
+    setSending(true);
+    setMessage('Salvando ordem…');
+    const updates = await Promise.all(reordered.map((photo, order) => client.from('beach_photos').update({ display_order: order + 1 }).eq('id', photo.id)));
+    const error = updates.find((result) => result.error)?.error;
+    await queryClient.invalidateQueries({ queryKey: ['beach-photos', selectedBeach.id] });
+    await queryClient.invalidateQueries({ queryKey: ['beach-cover-gallery', selectedBeach.id] });
+    setMessage(error ? error.message : 'Ordem das fotos atualizada.');
+    setSending(false);
+  };
+
   if (!session) return <AccessScreen text="Entre com sua conta para administrar as fotos." />;
   if (!isAdmin) return <AccessScreen text="Esta área está disponível somente para a conta administradora." />;
 
@@ -124,16 +141,16 @@ export default function PhotoAdminScreen() {
         <Pressable disabled={!file || sending} onPress={upload} style={[styles.send, (!file || sending) && styles.disabled]}><Text style={styles.sendText}>{sending ? 'Enviando…' : 'Adicionar foto à praia'}</Text></Pressable>
         {!!message && <Text style={styles.message}>{message}</Text>}
         <Text style={styles.label}>Fotos desta praia</Text>
-        {!photos.length ? <Text style={styles.text}>Nenhuma foto enviada para esta praia.</Text> : <View style={styles.photoList}>{photos.map((photo) => {
+        {!photos.length ? <Text style={styles.text}>Nenhuma foto enviada para esta praia.</Text> : <View style={styles.photoList}>{photos.map((photo, index) => {
           const { data: url } = supabase?.storage.from('beach-gallery').getPublicUrl(photo.storage_path) ?? { data: { publicUrl: '' } };
-          return <View key={photo.id} style={styles.photoCard}><Image source={{ uri: url.publicUrl }} style={styles.photoPreview} /><View style={styles.photoInfo}><Text numberOfLines={2} style={styles.photoCaption}>{photo.caption || 'Sem legenda'}</Text><Pressable disabled={sending} onPress={() => removePhoto(photo)} style={styles.delete}><Ionicons name="trash-outline" size={17} color={colors.onPrimary} /><Text style={styles.deleteText}>Apagar</Text></Pressable></View></View>;
+          return <View key={photo.id} style={styles.photoCard}><Image source={{ uri: url.publicUrl }} style={styles.photoPreview} /><View style={styles.photoInfo}><Text numberOfLines={2} style={styles.photoCaption}>{photo.caption || 'Sem legenda'}</Text><View style={styles.orderRow}><Text style={styles.orderText}>Posição {index + 1}</Text><Pressable disabled={sending || index === 0} onPress={() => void movePhoto(index, -1)} style={[styles.orderButton, (sending || index === 0) && styles.disabled]}><Ionicons name="chevron-up" size={17} color={colors.ink} /></Pressable><Pressable disabled={sending || index === photos.length - 1} onPress={() => void movePhoto(index, 1)} style={[styles.orderButton, (sending || index === photos.length - 1) && styles.disabled]}><Ionicons name="chevron-down" size={17} color={colors.ink} /></Pressable></View><Pressable disabled={sending} onPress={() => removePhoto(photo)} style={styles.delete}><Ionicons name="trash-outline" size={17} color={colors.onPrimary} /><Text style={styles.deleteText}>Apagar</Text></Pressable></View></View>;
         })}</View>}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-type Photo = { id: string; storage_path: string; caption: string | null };
+type Photo = { id: string; storage_path: string; caption: string | null; display_order: number };
 
 function AccessScreen({ text }: { text: string }) {
   return <SafeAreaView style={styles.safe}><View style={styles.access}><Text style={styles.title}>Fotos das praias</Text><Text style={styles.text}>{text}</Text><Pressable onPress={() => router.replace('/perfil')} style={styles.send}><Text style={styles.sendText}>Ir para o perfil</Text></Pressable></View></SafeAreaView>;
@@ -167,4 +184,7 @@ const styles = StyleSheet.create({
   photoCaption: { color: colors.ink, fontWeight: '700' },
   delete: { alignItems: 'center', alignSelf: 'flex-start', backgroundColor: colors.coral, borderRadius: radius.pill, flexDirection: 'row', gap: 6, paddingHorizontal: 11, paddingVertical: 8 },
   deleteText: { color: colors.onPrimary, fontSize: 12, fontWeight: '900' },
+  orderRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
+  orderText: { color: colors.muted, fontSize: 12, fontWeight: '800', marginRight: 2 },
+  orderButton: { alignItems: 'center', backgroundColor: colors.sand, borderColor: colors.line, borderRadius: 14, borderWidth: 1, height: 28, justifyContent: 'center', width: 28 },
 });
