@@ -43,7 +43,7 @@ export function NearbyServices({ beachName, latitude, longitude }: { beachName: 
         {nearbyServices.map((service) => (
           <Pressable key={service.label} accessibilityRole="button" accessibilityLabel={`Buscar ${service.label} no Google Maps`} onPress={() => openService(service)} style={styles.card}>
             <Ionicons name={service.icon} size={22} color={colors.aqua} />
-            <Text style={styles.label}>{service.label}</Text>
+            <Text style={styles.label} numberOfLines={2}>{service.label}</Text>
             <Ionicons name="open-outline" size={15} color={colors.muted} />
           </Pressable>
         ))}
@@ -58,5 +58,5 @@ const styles = StyleSheet.create({
   subtitle: { color: colors.muted, lineHeight: 20, marginTop: 5 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginTop: 14 },
   card: { alignItems: 'center', backgroundColor: colors.card, borderColor: colors.line, borderRadius: radius.sm, borderWidth: 1, flexDirection: 'row', gap: 9, minHeight: 58, paddingHorizontal: 12, paddingVertical: 10, width: '48%' },
-  label: { color: colors.ink, flex: 1, fontSize: 13, fontWeight: '700', lineHeight: 17 },
+  label: { color: colors.ink, flex: 1, flexShrink: 1, fontSize: 13, fontWeight: '700', lineHeight: 17 },
 });
