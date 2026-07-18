@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BeachVisual } from '@/src/components/BeachVisual';
 import { BeachWeather } from '@/src/components/BeachWeather';
 import { MapPreview } from '@/src/components/MapPreview';
+import { NearbyServices } from '@/src/components/NearbyServices';
 import { beaches } from '@/src/data/beaches';
 import { useFavorites } from '@/src/store/favorites';
 import { colors, radius } from '@/src/theme';
@@ -50,6 +51,7 @@ export default function BeachDetail() {
             <Fact label="Areia" value={beach.sand} />
             <Fact label="Ondas" value={beach.waves} />
           </View>
+          <NearbyServices beachName={beach.name} latitude={beach.latitude} longitude={beach.longitude} />
           <Text style={styles.heading}>História</Text>
           <Text style={styles.description}>{beach.history}</Text>
         </View>
