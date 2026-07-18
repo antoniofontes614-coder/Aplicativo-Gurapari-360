@@ -20,6 +20,7 @@ export default function BeachDetail() {
   if (!beach) return <SafeAreaView><Text>Praia não encontrada.</Text></SafeAreaView>;
 
   const navigate = () => Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${beach.latitude},${beach.longitude}`);
+  const goBack = () => router.canGoBack() ? router.back() : router.replace('/explorar');
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -27,7 +28,7 @@ export default function BeachDetail() {
         <View>
           <BeachVisual name={beach.name} height={300} />
           <View style={styles.top}>
-            <Pressable onPress={() => router.back()} style={styles.circle}><Ionicons name="arrow-back" size={22} color={colors.ink} /></Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel="Voltar" onPress={goBack} style={styles.circle}><Ionicons name="arrow-back" size={22} color={colors.ink} /></Pressable>
             <Pressable onPress={() => toggle(beach.id)} style={styles.circle}><Ionicons name={saved ? 'heart' : 'heart-outline'} size={22} color={saved ? colors.coral : colors.ink} /></Pressable>
           </View>
         </View>
