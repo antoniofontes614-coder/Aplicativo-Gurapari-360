@@ -3,7 +3,7 @@ import * as Linking from 'expo-linking';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BeachVisual } from '@/src/components/BeachVisual';
+import { BeachCover } from '@/src/components/BeachCover';
 import { BeachWeather } from '@/src/components/BeachWeather';
 import { BeachPhotoGallery } from '@/src/components/BeachPhotoGallery';
 import { MapPreview } from '@/src/components/MapPreview';
@@ -27,7 +27,7 @@ export default function BeachDetail() {
     <SafeAreaView style={styles.safe}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <BeachVisual name={beach.name} height={300} />
+          <BeachCover beachSlug={beach.id} name={beach.name} height={300} />
           <View style={styles.top}>
             <Pressable accessibilityRole="button" accessibilityLabel="Voltar" onPress={goBack} style={styles.circle}><Ionicons name="arrow-back" size={22} color={colors.ink} /></Pressable>
             <Pressable onPress={() => toggle(beach.id)} style={styles.circle}><Ionicons name={saved ? 'heart' : 'heart-outline'} size={22} color={saved ? colors.coral : colors.ink} /></Pressable>
