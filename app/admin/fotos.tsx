@@ -72,6 +72,12 @@ export default function PhotoAdminScreen() {
   };
 
   const removePhoto = (photo: Photo) => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Apagar esta foto? Ela será removida da página da praia e do armazenamento.')) {
+        void confirmRemovePhoto(photo);
+      }
+      return;
+    }
     Alert.alert('Apagar foto?', 'A foto será removida da página da praia e do armazenamento.', [
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Apagar', style: 'destructive', onPress: () => { void confirmRemovePhoto(photo); } },
