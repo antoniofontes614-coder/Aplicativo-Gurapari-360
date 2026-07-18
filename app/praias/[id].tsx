@@ -52,7 +52,7 @@ export default function BeachDetail() {
           </View>
           <NearbyServices beachName={beach.name} latitude={beach.latitude} longitude={beach.longitude} />
           <Text style={styles.heading}>História</Text>
-          <Text style={styles.description}>{beach.history}</Text>
+          <Text style={styles.description} numberOfLines={4}>{beach.history}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
